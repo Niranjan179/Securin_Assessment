@@ -13,7 +13,7 @@ app.use(cors());
 // Database Connection
 const connectDB = async () => {
     try {
-      const dbURI = "mongodb://localhost:27017/cvedb"; // Replace with your MongoDB URI
+      const dbURI = "mongodb+srv://admin:admin@cluster0.uqiok1v.mongodb.net/cvedb"; // Replace with your MongoDB URI
       await mongoose.connect(dbURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
