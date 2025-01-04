@@ -66,7 +66,7 @@ router.post("/list", async (req, res) => {
 
   try {
     // Query the MongoDB collection using the constructed filter object, limiting results to 100 records.
-    const results = await CVE.find(filter).limit(100);
+    const results = await CVE.find(filter).limit(1120);
 
     // Return the filtered list of CVEs in the response as JSON.
     res.json(results);

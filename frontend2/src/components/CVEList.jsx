@@ -1,69 +1,106 @@
-import { useState, useEffect } from "react"; // Import React and necessary hooks
-import axios from "axios"; // Axios for HTTP requests
-import { useNavigate } from "react-router-dom"; // useNavigate hook for navigation
-import "./cveList.css"; // Import CSS for styling
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./cveList.css";
 
 const CVEList = () => {
-  // Component to render the list of CVEs
+  const [cves, setCves] = useState([]);
+  const [filteredCves, setFilteredCves] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageWindow, setPageWindow] = useState([1, 2, 3, 4, 5]); // Carousel for page numbers
+  const navigate = useNavigate();
 
-  const [cves, setCves] = useState([]); // State to store fetched CVEs data
-  const [body, setBody] = useState({ filter: "recent", limit: 50 }); // State to manage request payload (default filter and limit)
-  const [isLoading, setIsLoading] = useState(true); // State to track whether data is loading
-  const navigate = useNavigate(); // useNavigate hook to navigate between routes
+  const formatDate = (isoString) => {
+    const date = new Date(isoString);
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    return date.toLocaleDateString("en-GB", options);
+  };
 
-  /**
-   * Helper function to format ISO date strings into a human-readable format
-   * @param {string} isoString - The ISO date string
-   * @returns {string} - Formatted date string in "DD-MMM-YYYY" format
-   */
-  function formatDate(isoString) {
-    const date = new Date(isoString); // Convert ISO string to a Date object
-    const options = { day: "2-digit", month: "short", year: "numeric" }; // Date formatting options
-    return date.toLocaleDateString("en-GB", options); // Format the date to "DD-MMM-YYYY"
-  }
-
-  /**
-   * useEffect to fetch CVE data whenever the `body` state changes.
-   */
   useEffect(() => {
     const fetchCVEs = async () => {
       try {
-        setIsLoading(true); // Set loading state to true before the request
-        const response = await axios.post("http://localhost:5000/cves/list", body); // Send POST request to the API with `body` as payload
-        setCves(response.data); // Update `cves` state with the response data
+        setIsLoading(true);
+        const response = await axios.post("http://localhost:5000/cves/list");
+        setCves(response.data);
       } catch (error) {
-        console.error("Error fetching CVEs:", error); // Log any errors
+        console.error("Error fetching CVEs:", error);
       } finally {
-        setIsLoading(false); // Set loading state to false after the request is completed
+        setIsLoading(false);
       }
     };
 
-    fetchCVEs(); // Call the function to fetch CVEs
-  }, [body]); // Dependency array ensures data is refetched whenever `body` changes
+    fetchCVEs();
+  }, []);
 
-  /**
-   * Function to handle row click events and navigate to the CVE detail page.
-   * @param {string} id - CVE ID
-   */
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * recordsPerPage;
+    const endIndex = startIndex + recordsPerPage;
+    setFilteredCves(cves.slice(startIndex, endIndex));
+  }, [currentPage, recordsPerPage, cves]);
+
   const handleRowClick = (id) => {
-    navigate(`/cves/${id}`); // Navigate to the detail page for the selected CVE
+    navigate(`/cves/${id}`);
   };
 
-  /**
-   * Function to handle filter changes.
-   * Updates the `filter` property in the `body` state dynamically.
-   * @param {Event} e - Change event
-   */
-  const handleFilterChange = (e) => {
-    setBody((prevBody) => ({
-      ...prevBody, // Retain other properties in `body`
-      filter: e.target.value, // Update the filter value based on user selection
-    }));
+  const handleRecordsChange = (e) => {
+    setRecordsPerPage(parseInt(e.target.value));
+    setCurrentPage(1);
+    setPageWindow([1, 2, 3, 4, 5]); // Reset page window
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+
+    // Update carousel window
+    const windowSize = 5; // Show 5 page numbers at a time
+    const totalPages = Math.ceil(cves.length / recordsPerPage);
+    if (page > pageWindow[pageWindow.length - 1]) {
+      // If current page is outside the window, shift forward
+      const newWindowStart = Math.min(totalPages - windowSize + 1, page);
+      setPageWindow(
+        Array.from({ length: windowSize }, (_, i) => newWindowStart + i)
+      );
+    } else if (page < pageWindow[0]) {
+      // If current page is before the window, shift backward
+      const newWindowStart = Math.max(1, page - windowSize + 1);
+      setPageWindow(
+        Array.from({ length: windowSize }, (_, i) => newWindowStart + i)
+      );
+    }
+  };
+
+  const totalPages = Math.ceil(cves.length / recordsPerPage);
 
   return (
     <div>
-      <h1>CVE LIST</h1> {/* Header for the page */}
+      <div
+        style={{
+          // display: "flex",
+          // justifyContent: "space-between",
+          alignItems: "center",
+          height:"20%"
+        }}
+      >
+        <h1>CVE LIST</h1>
+        <div style={{height:"20%"}}>
+          <label htmlFor="recordsPerPage" style={{ marginLeft: "80%" }}>
+            Results Per Page:
+          </label>
+          <select
+            id="recordsPerPage"
+            value={recordsPerPage}
+            onChange={handleRecordsChange}
+            style={{ padding: "5px", fontSize: "14px" }}
+          >
+            <option value={10}>10</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -76,35 +113,108 @@ const CVEList = () => {
         </thead>
         <tbody id="cve-body">
           {isLoading ? (
-            // Display a loading message while the data is being fetched
             <tr>
               <td colSpan="5">Loading...</td>
             </tr>
-          ) : cves.length > 0 ? (
-            // If CVEs are available, render them in table rows
-            cves.map((CVE) => (
+          ) : filteredCves.length > 0 ? (
+            filteredCves.map((CVE) => (
               <tr
-                key={CVE.cve.id} // Use CVE ID as the unique key
-                onClick={() => handleRowClick(CVE.cve.id)} // Handle row click to navigate
-                style={{ cursor: "pointer" }} // Change cursor to pointer for clickable rows
+                key={CVE.cve.id}
+                onClick={() => handleRowClick(CVE.cve.id)}
+                style={{ cursor: "pointer" }}
               >
-                <td>{CVE.cve.id}</td> {/* Display CVE ID */}
-                <td>{CVE.cve.sourceIdentifier}</td> {/* Display source identifier */}
-                <td>{formatDate(CVE.cve.published)}</td> {/* Format and display published date */}
-                <td>{formatDate(CVE.cve.lastModified)}</td> {/* Format and display last modified date */}
-                <td>{CVE.cve.vulnStatus}</td> {/* Display vulnerability status */}
+                <td>{CVE.cve.id}</td>
+                <td>{CVE.cve.sourceIdentifier}</td>
+                <td>{formatDate(CVE.cve.published)}</td>
+                <td>{formatDate(CVE.cve.lastModified)}</td>
+                <td>{CVE.cve.vulnStatus}</td>
               </tr>
             ))
           ) : (
-            // If no CVEs are found, display a message
             <tr>
               <td colSpan="5">No CVEs found</td>
             </tr>
           )}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      <div
+        style={{
+          marginTop: "0",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height:"40%"
+        }}
+      >
+        <button
+          onClick={() => handlePageChange(1)}
+          disabled={currentPage === 1}
+          style={{
+            margin: "0 5px",
+            padding: "5px 10px",
+            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+          }}
+        >
+          &laquo; First
+        </button>
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          style={{
+            margin: "0 5px",
+            padding: "5px 10px",
+            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+          }}
+        >
+          &lsaquo; Prev
+        </button>
+        {pageWindow.map(
+          (page) =>
+            page <= totalPages && (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                style={{
+                  margin: "0 5px",
+                  padding: "5px 10px",
+                  backgroundColor: page === currentPage ? "#007BFF" : "#FFF",
+                  color: page === currentPage ? "#FFF" : "#000",
+                  border: "1px solid #007BFF",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                {page}
+              </button>
+            )
+        )}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          style={{
+            margin: "0 5px",
+            padding: "5px 10px",
+            cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+          }}
+        >
+          Next &rsaquo;
+        </button>
+        <button
+          onClick={() => handlePageChange(totalPages)}
+          disabled={currentPage === totalPages}
+          style={{
+            margin: "0 5px",
+            padding: "5px 10px",
+            cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+          }}
+        >
+          Last &raquo;
+        </button>
+      </div>
     </div>
   );
 };
 
-export default CVEList; // Export the CVEList component
+export default CVEList;
