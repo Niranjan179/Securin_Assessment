@@ -1,0 +1,20 @@
+tbody{
+    width:100%;
+    height:50%;
+}
+table td, table th {
+    padding: 1px 1px;
+    /* text-align: left; */
+    border: 1px solid black; /* Border for cells */
+}
+table {
+    width: 100%;
+    height: 40%;
+    border: 2px solid black; /* Define border around the table */
+    border-collapse: collapse; /* Remove gaps between table cells */
+    font-size: 14px;
+    /* position:static; */
+}
+td{
+    width:20%;
+}
