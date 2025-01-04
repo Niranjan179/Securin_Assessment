@@ -2,21 +2,21 @@ Securin Assessment
 
 This repository contains the solution to the Securin Assessment problem. It implements a paginated table with a dropdown to control the number of rows displayed, page navigation (including carousel-like pagination for page numbers), and dynamic fetching of data from an API.
 
-Table of Contents
+**Table of Contents**
 
-Logical Approach
+**Logical Approach**
 
-Quality of Code
+**Quality of Code**
 
-Features
+**Features**
 
-Input and Output Screenshots
+**Input and Output Screenshots**
 
-Overall Approach
+**Overall Approach**
 
-Setup Instructions
+**Setup Instructions**
 
-Logical Approach
+**Logical Approach**
 
 Problem Statement:
 
@@ -42,7 +42,7 @@ Pagination tracks the current page, total pages, and the window of page numbers 
 Carousel-like Pagination:
 A sliding window logic ensures only a limited number of page numbers (5) are visible at a time. Buttons for navigation (First, Prev, Next, Last) allow seamless traversal.
 
-Quality of Code
+**Quality of Code**
 
 Modular Design:
 
@@ -90,7 +90,7 @@ Proper formatting of date fields for readability.
 
 Input and Output Screenshots
 
-Input
+**Input**
 
 Dropdown to select number of rows per page:
 
@@ -101,11 +101,11 @@ Pagination with carousel:
 Output
 
 Table displaying rows and paginated controls:
-[a relative link](outputs/img1.png)
-[a relative link](outputs/img2.png)
-[a relative link](outputs/img3.png)
-[a relative link](outputs/img4.png)
-[a relative link](outputs/img5.png)
+![Alt text](outputs/img1.png)
+![Alt text](outputs/img2.png)
+![Alt text](outputs/img3.png)
+![Alt text](outputs/img4.png)
+![Alt text](outputs/img5.png)
 Overall Approach
 
 Frontend Development:
