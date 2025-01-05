@@ -1,133 +1,99 @@
-Securin Assessment
+# Securin Assessment
 
-This repository contains the solution to the Securin Assessment problem. It implements a paginated table with a dropdown to control the number of rows displayed, page navigation (including carousel-like pagination for page numbers), and dynamic fetching of data from an API.
+A comprehensive CVE (Common Vulnerabilities and Exposures) management system built as part of the Securin assessment. This application features dynamic data fetching, pagination with a carousel-style navigation, and detailed CVE information display.
 
-**Table of Contents**
+---
 
-**Logical Approach**
+## 📋 Table of Contents
+1. [Problem Statement](#problem-statement)
+2. [Logical Approach](#logical-approach)
+3. [Quality of Code](#quality-of-code)
+4. [Input and Output Screenshots](#input-and-output-screenshots)
+5. [Setup Instructions](#setup-instructions)
+6. [Features](#features)
+7. [Repository Link](#repository-link)
 
-**Quality of Code**
+---
 
-**Features**
+## 📌 Problem Statement
 
-**Input and Output Screenshots**
+The application addresses the following requirements:
 
-**Overall Approach**
+1. **CVE List View:** Display essential details such as ID, source identifier, publication date, last modified date, and status.
+2. **Detailed CVE Information:** Fetch and display metrics like CVSS scores and configurations for a selected CVE.
+3. **Dynamic Pagination:** Allow users to change the number of records displayed per page dynamically.
+4. **Pagination Carousel:** Provide an intuitive carousel-style navigation for better user experience.
 
-**Setup Instructions**
+---
 
-**Logical Approach**
+## 🧠 Logical Approach
 
-Problem Statement:
+### 1. **Dynamic Data Fetching**
+- Used `axios` to fetch CVE data from the backend via POST requests.
+- Leveraged `useEffect` to re-fetch data dynamically whenever the dropdown or pagination state changes.
 
-Display a table populated with data fetched from an API.
+### 2. **Pagination Logic**
+- Maintained `currentPage` and `recordsPerPage` in state variables.
+- Calculated the total number of pages based on records and displayed them dynamically in the carousel.
 
-Include a dropdown to control the number of rows displayed.
+### 3. **Carousel Navigation**
+- Showed a limited set of page numbers in the carousel for easy navigation.
+- Allowed users to navigate to the previous and next sets of pages seamlessly.
 
-Add pagination with a carousel-like display of page numbers.
+### 4. **Detailed CVE View**
+- Rendered comprehensive details for a selected CVE, including CVSS scores, configurations, and additional metadata.
 
-Allow dynamic navigation between pages and rows.
+### 5. **Responsive Design**
+- Styled components for usability on various screen sizes, ensuring responsiveness across devices.
 
-Logic Implementation:
+---
 
-Fetching Data:
-The data is fetched from the API using Axios in a React useEffect hook.
+## ✅ Quality of Code
 
-Filtering Data for Pages:
-The rows displayed on the table are dynamically updated based on the current page and the value of rows per page selected from the dropdown.
+- **Modular Design:** Divided code into reusable React components for better scalability.
+- **State Management:** Used `useState` and `useEffect` effectively for managing data and application states.
+- **Error Handling:** Implemented fallback messages for API errors or missing data.
+- **Code Readability:** Included clear and concise comments explaining key logic.
 
-Pagination Logic:
-Pagination tracks the current page, total pages, and the window of page numbers visible (e.g., only 5 at a time).
+---
 
-Carousel-like Pagination:
-A sliding window logic ensures only a limited number of page numbers (5) are visible at a time. Buttons for navigation (First, Prev, Next, Last) allow seamless traversal.
+## 📷 Input and Output Screenshots
 
-**Quality of Code**
+### Input
 
-Modular Design:
+1. **Dropdown for Results Per Page**
+   - Adjust the number of records displayed dynamically.
+    ![Dropdown Input Example](outputs/img5.png)
+2. **Carousel for Page Navigation**
+   - Navigate between pages using an intuitive carousel.
+     ![Carousel Input Example](outputs/img2.png)
 
-Functions and hooks are cleanly separated.
+### Output
 
-Variables and state hooks have descriptive names.
+1. **List of CVEs**
+   - Displays essential CVE details in a structured table.
 
-The UI is dynamically updated based on state changes.
+![CVE Details in Table](outputs/img1.png)
+![CVE Details in Table](outputs/img3.png)
 
-Responsive Design:
+2. **Detailed CVE View**
+   - Showcases metrics, configurations, and additional details of a selected CVE.
+  ![CVE Detail Example](outputs/img4.png)
 
-Dropdown and pagination are styled to fit comfortably in the UI.
+## 🛠️ Overall Approach
 
-The layout adapts to screen sizes.
+### **Frontend Development**
+- Designed and built the user interface using **React** for modularity and responsiveness.
+- Styled components using **CSS** to maintain simplicity and a clean look.
 
-Error Handling:
+### **Data Handling**
+- Used **Axios** to fetch CVE data from the backend API via POST requests.
+- Dynamically sliced the fetched data array to display only the required rows per page, ensuring efficient rendering.
 
-Added a try-catch block for API calls to handle errors gracefully.
+### **Pagination Design**
+- Implemented a **sliding window** approach to display a limited set of page numbers for better navigation.
+- Updated the **current page** dynamically based on user interactions, allowing seamless transitions.
 
-Conditional rendering ensures fallback messages (e.g., "Loading...", "No CVEs found") when data is unavailable or still being fetched.
-
-Performance Optimization:
-
-Only the visible rows for the current page are rendered.
-
-The pagination logic minimizes unnecessary re-renders.
-
-Features
-
-Dynamic Row Display:
-
-Dropdown to control the number of rows displayed (10, 50, 100).
-
-Pagination:
-
-Carousel-like pagination for large datasets.
-
-Navigation buttons for First, Prev, Next, and Last pages.
-
-Interactive Table:
-
-Clickable rows to navigate to detailed information.
-
-Proper formatting of date fields for readability.
-
-Input and Output Screenshots
-
-**Input**
-
-Dropdown to select number of rows per page:
-
-
-Pagination with carousel:
-
-
-Output
-
-Table displaying rows and paginated controls:
-![Alt text](outputs/img1.png)
-![Alt text](outputs/img2.png)
-![Alt text](outputs/img3.png)
-![Alt text](outputs/img4.png)
-![Alt text](outputs/img5.png)
-Overall Approach
-
-Frontend Development:
-
-Built the UI using React.
-
-Styled components using CSS for simplicity.
-
-Data Handling:
-
-Used Axios to fetch data from the API.
-
-Dynamically sliced the data array to display only the required rows per page.
-
-Pagination Design:
-
-Implemented a sliding window for page numbers.
-
-Updated the current page dynamically based on user interaction.
-
-User Experience:
-
-Dropdown above the table for controlling rows.
-
-Smooth transitions between pages with carousel-like navigation.
+### **User Experience**
+- Added a **dropdown** above the table to let users control the number of rows displayed per page (e.g., 10, 50, 100).
+- Ensured **smooth transitions** between pages with a carousel-style navigation system for an intuitive experience.
